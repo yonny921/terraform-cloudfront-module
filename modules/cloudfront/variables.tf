@@ -66,7 +66,7 @@ variable "waf_web_acl_id" {
 
 variable "origins" {
   description = "Lista de orígenes para la distribución de CloudFront"
-  type = list(object({
+  type = map(object({
     origin_id                = string
     origin_type              = string
     domain_name              = string
@@ -80,10 +80,9 @@ variable "origins" {
   }))
 }
 
-
 variable "ordered_cache_behaviors" {
   description = "Lista opcional de comportamientos de caché ordenados para CloudFront"
-  type = list(object({
+  type = map(object({
     path_pattern               = optional(string, null)
     target_origin_id           = string
     viewer_protocol_policy     = optional(string)
@@ -94,7 +93,7 @@ variable "ordered_cache_behaviors" {
     origin_request_policy_id   = optional(string)
     response_headers_policy_id = optional(string)
   }))
-  default = []
+  default = {}
 }
 
 variable "default_cache_behavior" {
@@ -113,11 +112,11 @@ variable "default_cache_behavior" {
 
 variable "custom_error_responses" {
   description = "Lista opcional de respuestas de error personalizadas para S3 CloudFront"
-  type = list(object({
+  type = map(object({
     error_code            = number
     response_code         = optional(number, null)
     response_page_path    = optional(string, null)
     error_caching_min_ttl = optional(number, null)
   }))
-  default = []
+  default = {}
 }

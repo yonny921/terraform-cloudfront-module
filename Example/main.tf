@@ -10,24 +10,24 @@ module "cloudfront" {
 
   # Configuración de los orígenes de la distribución de CloudFront, se pueden incluir multiples orígenes de tipo S3 y ALB (Custom)
   # Se pueden agregar parametros adicionales como origin_path, http_port, https_port, etc. según sea necesario.
-  origins = [
-    {
+  origins = {
+    s3 = {
       origin_id                = "s3-origin" # Identificador único para el origen S3
       origin_access_control_id = "E3FLV6YK5QGE11" # Reemplazar con OAC para S3
       origin_type              = "s3" # Tipo de origen S3
       domain_name              = "domain.s3.amazonaws.com" # Reemplazar con el nombre de dominio del bucket S3
     },
-    {
+    alb = {
       origin_id   = "alb-origin" # Identificador único para el origen ALB
       origin_type = "custom" # Tipo de origen personalizado (ALB)
       domain_name = "domain.us-east-1.elb.amazonaws.com" # Reemplazar con el nombre de dominio del ALB
     }
-  ]
+  }
 
   price_class         = "PriceClass_All" # Necesario para permitir el uso de todos los puntos de presencia de CloudFront
 
   # Si se incluye mas de un origen, se debe especificar el comportamiento de caché ordenado para cada uno de ellos. #Por ahora solo soporta politicas modernas de caché y CORS
-  ordered_cache_behaviors = [
+  ordered_cache_behaviors = {
     {
       path_pattern               = "/bucket/*"
       target_origin_id           = "s3-origin"
@@ -37,7 +37,7 @@ module "cloudfront" {
       origin_request_policy_id   = "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf" # Managed-CORS-S3Origin
       response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03" # SecurityHeadersPolicy
     }
-  ]
+  }
 
   # Comportamiento de caché por defecto, se debe especificar al menos uno
   default_cache_behavior = {
@@ -54,13 +54,13 @@ module "cloudfront" {
 
 
   # Configuración de respuestas de error personalizadas, se puede omitir si no se requiere
-  custom_error_responses = [
+  custom_error_responses = {
     {
       error_code         = 404
       response_code      = 404
       response_page_path = "/index.html"
     }
-  ]
+  }
 
   default_root_object = "index.html" # Objeto raíz por defecto para la distribución de CloudFront, solo es necesario si se utiliza un bucket S3 como origen
   

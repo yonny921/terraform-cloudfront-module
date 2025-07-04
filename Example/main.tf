@@ -28,7 +28,7 @@ module "cloudfront" {
 
   # Si se incluye mas de un origen, se debe especificar el comportamiento de caché ordenado para cada uno de ellos. #Por ahora solo soporta politicas modernas de caché y CORS
   ordered_cache_behaviors = {
-    {
+    s3 = {
       path_pattern               = "/bucket/*"
       target_origin_id           = "s3-origin"
       viewer_protocol_policy     = "redirect-to-https"
@@ -55,7 +55,7 @@ module "cloudfront" {
 
   # Configuración de respuestas de error personalizadas, se puede omitir si no se requiere
   custom_error_responses = {
-    {
+    s3 = {
       error_code         = 404
       response_code      = 404
       response_page_path = "/index.html"
